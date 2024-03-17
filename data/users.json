@@ -1,0 +1,34 @@
+[
+  {
+    "name": "D",
+    "email": "D",
+    "password": "d",
+    "address": "D",
+    "age": 6,
+    "phoneNumber": "7"
+  },
+  {
+    "name": "Davidgomez",
+    "email": "Davidoathg@gmail.com",
+    "password": "Player1@$.",
+    "address": "715 glide ave spc 105, West Sacramento, California, 95691",
+    "age": 20,
+    "phoneNumber": "7029371712"
+  },
+  {
+    "name": "Helloworld",
+    "email": "Hello@hello.com",
+    "password": "helloworld",
+    "address": "123 hello at",
+    "age": 6,
+    "phoneNumber": "1231231234"
+  },
+  {
+    "name": "A",
+    "email": "A",
+    "password": "a",
+    "address": "A",
+    "age": 6,
+    "phoneNumber": "1"
+  }
+]
