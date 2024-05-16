@@ -6,14 +6,18 @@ import cors from 'cors';
 
 
 
-console.log('made it but when? after middle where inports');
+console.log('made it but when? after cors setup');
 function setupMiddleware(app) {
+    console.log('Setting up CORS middleware...');
     app.use(cors()); // Enable CORS for all routes
-    console.log('made it here in setupMiddleware.js between cors and parsing json bodies');
+    console.log('CORS middleware set up successfully.');
+
+    console.log('Setting up JSON body parsing middleware...');
     app.use(express.json()); // Parse JSON bodies
-    console.log('made it here in setupMiddleware.js after parsing json bodies');
-    // Add other middleware setup here
+    console.log('JSON body parsing middleware set up successfully.');
+
 }
+
 console.log('made it here should be the end of setupMiddleware.js');
 export default setupMiddleware;
 

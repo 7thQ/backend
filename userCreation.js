@@ -1,7 +1,5 @@
 
 
-// userCreation.js
-
 import fs from 'fs/promises';
 
 // Assuming the users.json is in the 'data' subdirectory of the directory where this script is located
@@ -9,34 +7,62 @@ const dataPath = new URL('data/users.json', import.meta.url).pathname;
 
 export async function createUser(req, res) {
     try {
-        const { name, email, password, address, age, phoneNumber } = req.body;
+        const {
+            firstName,
+            lastName,
+            userName,
+            password,
+            email,
+            streetAddress,
+            unit,
+            city,
+            state,
+            zip,
+            dateOfBirth,
+            phoneNumber
+        } = req.body;
 
         // Read the current users data
         const data = await fs.readFile(dataPath, 'utf8');
         const users = JSON.parse(data);
 
         // Check if the user already exists by email
-        if (users.some(user => user.email === email)) {
+        if (users.some(user => user.userdetails.email === email)) {
+            console.log('User already exists');
             return res.status(409).json({ message: 'User already exists.' });
         }
 
-        // Add the new user
-        const newUser = { name, email, password, address, age, phoneNumber };
+        // Add the new user with nested userDetails
+        const newUser = {
+            userdetails: { // Nesting user details under 'userdetails'
+                firstName,
+                lastName,
+                email,
+                streetAddress,
+                unit,
+                city,
+                state,
+                zip,
+                dateOfBirth: new Date(dateOfBirth), // Assuming the date comes as a string
+                phoneNumber,
+                Logins: { // Nesting login details under 'Logins'
+                    userName,
+                    password}
+
+            }
+        };
         users.push(newUser);
 
         // Save the updated users back to the file
         await fs.writeFile(dataPath, JSON.stringify(users, null, 2), 'utf8');
         console.log('User created successfully');
 
-        res.status(201).json({ message: 'User created successfully.' });
+        res.status(201).json({ message: 'User created successfully.'});
     } catch (error) {
         console.error('Server error:', error);
         res.status(500).json({ message: 'Server error' });
     }
-}
-
-
-
+};
 
 
 
@@ -47,7 +73,7 @@ const ddataPath = new URL('data/events.json', import.meta.url).pathname;
 export async function createEvent(req, res) {
     try {
         const { eventName, eventDate, eventLocation, specialFeatures } = req.body;
-
+        console.log('Event creation request received:');
         // Read the current events data
         const data = await fs.readFile(ddataPath, 'utf8');
         const events = JSON.parse(data);
@@ -81,12 +107,4 @@ export async function createEvent(req, res) {
     }
 }
 
-
-// if (user) {
-//     console.log('Login successful');
-//     res.status(200).json({ message: 'Login successful' });
-// } else {
-//     console.log('Login failed');
-//     res.status(401).json({ message: 'Invalid email or password' });
-// }
 

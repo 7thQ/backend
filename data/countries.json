@@ -1,0 +1,57 @@
+[
+    {
+     
+        "id": "P1WC1C1",
+        "eventName": "United States",
+        "ranking": "1",
+        "eventDates": {
+          "start": "2024-09-20T00:00:00.000Z",
+          "end": "2024-09-21T23:59:59.999Z"
+        },
+        "location": {
+          "address": "715 Glide Ave",
+          "city": "San Francisco",
+          "state": "CA",
+          "zipCode": "94134"
+        },
+        "features": {
+         "firstFeature" : "gangs",
+         "secondFeature": "bad_bitchs",
+         "thirdfeature" : "partys"
+      },
+      "Coordinate":   {
+        "latitude": "36.491508", 
+        "longitude": "-121.197243"
+        }
+      },
+      {
+     
+        "id": "P1WC1C2",
+        "eventName": "canada",
+        "ranking": "2",
+    
+        "eventDates": {
+          "start": "2024-09-20T00:00:00.000Z",
+          "end": "2024-09-21T23:59:59.999Z"
+        },
+        "location": {
+          "address": "715 Glide Ave",
+          "city": "San Francisco",
+          "state": "CA",
+          "zipCode": "94134"
+        },
+        "features": {
+         "firstFeature" : "nice people",
+         "secondFeature": "candy",
+         "thirdfeature" : "snow"
+      },
+      "Coordinate":   {
+        "latitude": "46.491508", 
+        "longitude": "-121.197243"
+        }
+      }
+      
+    
+    
+    
+    ]
