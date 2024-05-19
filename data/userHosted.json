@@ -1,6 +1,6 @@
+
 [
-{
- 
+  {
     "id": "P1WC1C1S1SC1CT1N1UP1",
     "eventName": "Happy place",
     "ranking": "1",
@@ -9,49 +9,35 @@
       "end": "2024-09-21T23:59:59.999Z"
     },
     "location": {
-      "address": "715 Glide Ave",
+      "streetAddress": "715 Glide Ave",
       "city": "San Francisco",
       "state": "CA",
       "zipCode": "94134"
     },
-    "features": {
-     "firstFeature" : "partys",
-     "secondFeature": "partys",
-     "thirdfeature" : "partys"
-  },
-  "Coordinate":   {
-    "latitude": "36.491508", 
-    "longitude": "-121.197243"
+    "features": ["partys", "partys", "partys"],
+    "Coordinate": {
+      "latitude": "36.491508",
+      "longitude": "-121.197243"
     }
   },
   {
- 
     "id": "P1WC1C1S1SC1CT1N1UP2",
     "eventName": "sad place",
     "ranking": "2",
-
     "eventDates": {
       "start": "2024-09-20T00:00:00.000Z",
       "end": "2024-09-21T23:59:59.999Z"
     },
     "location": {
-      "address": "715 Glide Ave",
+      "streetAddress": "715 Glide Ave",
       "city": "San Francisco",
       "state": "CA",
       "zipCode": "94134"
     },
-    "features": {
-     "firstFeature" : "stabbings",
-     "secondFeature": "gangs",
-     "thirdfeature" : "guns"
-  },
-  "Coordinate":   {
-    "latitude": "46.491508", 
-    "longitude": "-121.197243"
+    "features": ["stabbings", "gangs", "guns"],
+    "Coordinate": {
+      "latitude": "46.491508",
+      "longitude": "-121.197243"
     }
   }
-  
-
-
-
 ]
