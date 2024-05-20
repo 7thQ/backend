@@ -178,7 +178,8 @@
 //     }
 // };
 
-import fs from 'fs';
+// import fs from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 
 export const getVideos = async (req, res) => {
@@ -212,5 +213,66 @@ export const getVideos = async (req, res) => {
     } catch (error) {
         console.error('Error:', error);
         res.status(404).send('Pool not found or no videos available');
+    }
+};
+
+
+
+
+import { fileURLToPath } from 'url';
+
+// Define the __dirname variable to use with ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Create a handler for video uploads
+export const postVideos = async (req, res) => {
+    try {
+        console.log('Received upload request');
+        
+        // Extract the boundary from the Content-Type header
+        const boundary = req.headers['content-type'].split('boundary=')[1];
+        const chunks = [];
+        
+        // Collect the data chunks as they come in
+        req.on('data', chunk => {
+            console.log('Receiving data chunk');
+            chunks.push(chunk);
+        });
+
+        // Once all the data has been received, process it
+        req.on('end', async () => {
+            console.log('Data reception complete');
+            const buffer = Buffer.concat(chunks);
+            const parts = buffer.toString().split(`--${boundary}`);
+
+            for (let part of parts) {
+                if (part.includes('Content-Disposition')) {
+                    const nameMatch = part.match(/name="([^"]*)"/);
+                    const filenameMatch = part.match(/filename="([^"]*)"/);
+
+                    if (filenameMatch && nameMatch) {
+                        const filename = filenameMatch[1];
+                        console.log(`Processing file: ${filename}`);
+                        
+                        const startIndex = part.indexOf('\r\n\r\n') + 4;
+                        const endIndex = part.lastIndexOf('\r\n--');
+
+                        const fileData = part.substring(startIndex, endIndex);
+
+                        // Save the file to the Videos folder in the Data directory
+                        const filePath = path.join(__dirname, 'Data', 'Videos', filename);
+                        await fs.writeFile(filePath, fileData, 'binary');
+                        console.log(`File saved to: ${filePath}`);
+                    }
+                }
+            }
+            
+            res.status(200).send({ message: 'File uploaded successfully' });
+            console.log('Upload response sent');
+        });
+    } catch (error) {
+        console.error('Failed to upload file:', error);
+        res.status(500).send({ message: 'Failed to upload file' });
     }
 };

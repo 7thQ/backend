@@ -1,9 +1,10 @@
 
 
 import fs from 'fs/promises';
+import { URL } from 'url';
 
 // Assuming the users.json is in the 'data' subdirectory of the directory where this script is located
-const dataPath = new URL('data/users.json', import.meta.url).pathname;
+
 
 export async function createUser(req, res) {
     try {
@@ -21,6 +22,8 @@ export async function createUser(req, res) {
             dateOfBirth,
             phoneNumber
         } = req.body;
+
+        const dataPath = new URL('data/users.json', import.meta.url).pathname;
 
         // Read the current users data
         const data = await fs.readFile(dataPath, 'utf8');
@@ -68,14 +71,17 @@ export async function createUser(req, res) {
 
 
 
-const ddataPath = new URL('data/events.json', import.meta.url).pathname;
+
 
 export async function createEvent(req, res) {
     try {
         const { eventName, eventDate, eventLocation, specialFeatures } = req.body;
         console.log('Event creation request received:');
+
+        const dataPath = new URL('data/events.json', import.meta.url).pathname;
+
         // Read the current events data
-        const data = await fs.readFile(ddataPath, 'utf8');
+        const data = await fs.readFile(dataPath, 'utf8');
         const events = JSON.parse(data);
 
         // Optionally, check if the event already exists by name and date
@@ -88,7 +94,7 @@ export async function createEvent(req, res) {
         events.push(newEvent);
 
         // Save the updated events back to the file
-        await fs.writeFile(ddataPath, JSON.stringify(events, null, 2), 'utf8');
+        await fs.writeFile(dataPath, JSON.stringify(events, null, 2), 'utf8');
         
         // Log the event name and up to 3 special features to the console
         console.log(`Event created successfully: ${eventName}`);

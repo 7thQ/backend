@@ -6,8 +6,8 @@ import { handleSearch } from './googleSearchApi.js';
 import { conditionalExecutionBasedOnGroupOne } from './pushN.js';
 import setupMiddleware from './setupMiddleware.js';
 import { loginUser, getUserDetails } from './userValidation.js';
-import { getcoordinates, getCountrys, getEvents } from './coordinates.js'
-import { getVideos } from './videos.js'
+import { getCountrys, getEvents, addEvent } from './coordinates.js'
+import { getVideos, postVideos } from './videos.js'
 import path from 'path';
 
 // Import other handlers as needed
@@ -40,10 +40,11 @@ app.post('/login', loginUser);
 app.post('/search', handleSearch);
 app.post('/pushingNeuronToEngineNetwork', conditionalExecutionBasedOnGroupOne);
 app.get('/get-user', getUserDetails);
-app.get('/get-coordinates', getcoordinates);
+app.post('/add-event', addEvent);
 app.get('/get-events', getEvents);
 app.get('/get-countrys', getCountrys);
 app.get('/get-Videos', getVideos);
+app.post('/add-Video', postVideos)
 
 
 
