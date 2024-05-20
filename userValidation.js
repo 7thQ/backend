@@ -27,12 +27,12 @@ export const loginUser = async (req, res) => {
         const users = JSON.parse(data);
 
         // Check if the user exists and password matches
-        const user = users.find(user => user.userdetails.Logins.userName === userName && user.userdetails.Logins.password === password);
+        const user = users.find(user => user.Logins.userName === userName && user.Logins.password === password);
 
         if (user) {
             console.log('Login successful');
             
-            res.status(200).json({ Logins: user.userdetails.Logins});
+            res.status(200).json({ Logins: user.Logins});
         } else {
             console.log('Login failed');
             res.status(401).json({ message: 'Invalid email or password' });

@@ -22,6 +22,7 @@ export async function createUser(req, res) {
             dateOfBirth,
             phoneNumber
         } = req.body;
+        
 
         const dataPath = new URL('data/users.json', import.meta.url).pathname;
 
@@ -37,7 +38,7 @@ export async function createUser(req, res) {
 
         // Add the new user with nested userDetails
         const newUser = {
-            userdetails: { // Nesting user details under 'userdetails'
+             // Nesting user details under 'userdetails'
                 firstName,
                 lastName,
                 email,
@@ -52,7 +53,7 @@ export async function createUser(req, res) {
                     userName,
                     password}
 
-            }
+            
         };
         users.push(newUser);
 

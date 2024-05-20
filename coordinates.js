@@ -111,7 +111,33 @@ export const addEvent = async (req, res) => {
             start,
             end,
             features });
+
+            const dataRefomat = 
+
+            {
             
+            eventName,
+            
+            eventDates: {
+              start,
+              end
+            },
+            location: {
+              streetAddress,
+              city,
+              state,
+              zipCode,
+            },
+            features: features,
+            Coordinate: {
+              latitude,
+              longitude
+            }
+          }
+           
+
+            console.log('Received request to add event', dataRefomat);
+
 
 
 
