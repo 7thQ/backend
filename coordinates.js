@@ -86,22 +86,10 @@ export const getCountrys = async (req, res) => {
 };
 
 
-
 export const addEvent = async (req, res) => {
-    console.log('Received request to add event');
-
-    const { eventName,
-        latitude,
-        longitude,
-        streetAddress,
-        city,
-        state,
-        zipCode,
-        start,
-        end,
-        features } = req.body;
-
-        console.log('Received request to add event', { eventName,
+    try {
+        const {
+            eventName,
             latitude,
             longitude,
             streetAddress,
@@ -110,102 +98,72 @@ export const addEvent = async (req, res) => {
             zipCode,
             start,
             end,
-            features });
-
-            const dataRefomat = 
-
-            {
-            
-            eventName,
-            
-            eventDates: {
-              start,
-              end
-            },
-            location: {
-              streetAddress,
-              city,
-              state,
-              zipCode,
-            },
-            features: features,
-            Coordinate: {
-              latitude,
-              longitude
-            }
-          }
-           
-
-            console.log('Received request to add event', dataRefomat);
-
-
-
-
-}
-
-
-// Assuming the users.json is in the 'data' subdirectory of the directory where this script is located
-
-
-export async function createUser(req, res) {
-    try {
-        const {
-            firstName,
-            lastName,
-            userName,
-            password,
-            email,
-            streetAddress,
-            unit,
-            city,
-            state,
-            zip,
-            dateOfBirth,
-            phoneNumber
+            features
         } = req.body;
 
-        const dataPath = new URL('data/users.json', import.meta.url).pathname;
+        const dataPath = new URL('data/userHosted.json', import.meta.url).pathname;
 
-        // Read the current users data
+        // Read the current user-hosted events data
         const data = await fs.readFile(dataPath, 'utf8');
-        const users = JSON.parse(data);
+        const userHosted = JSON.parse(data);
 
-        // Check if the user already exists by email
-        if (users.some(user => user.userdetails.email === email)) {
-            console.log('User already exists');
-            return res.status(409).json({ message: 'User already exists.' });
+        // Check if the event already exists by address or coordinates
+        if (userHosted.some(event =>
+            (event.location.streetAddress === streetAddress && 
+             event.location.city === city && 
+             event.location.state === state && 
+             event.location.zipCode === zipCode) || 
+            (event.Coordinate.latitude === latitude && 
+             event.Coordinate.longitude === longitude)
+        )) {
+            console.log('Event already exists at this location');
+            return res.status(409).json({ message: 'Event already exists at this location.' });
         }
 
-        // Add the new user with nested userDetails
-        const newUser = {
-            userdetails: { // Nesting user details under 'userdetails'
-                firstName,
-                lastName,
-                email,
+        console.log('Received request to add event', {
+            eventName,
+            latitude,
+            longitude,
+            streetAddress,
+            city,
+            state,
+            zipCode,
+            start,
+            end,
+            features
+        });
+
+        const newEvent = {
+            eventName,
+            eventDates: {
+                start: new Date(start),
+                end: new Date(end)
+            },
+            location: {
                 streetAddress,
-                unit,
                 city,
                 state,
-                zip,
-                dateOfBirth: new Date(dateOfBirth), // Assuming the date comes as a string
-                phoneNumber,
-                Logins: { // Nesting login details under 'Logins'
-                    userName,
-                    password}
-
+                zipCode,
+            },
+            features,
+            Coordinate: {
+                latitude,
+                longitude
             }
         };
-        users.push(newUser);
 
-        // Save the updated users back to the file
-        await fs.writeFile(dataPath, JSON.stringify(users, null, 2), 'utf8');
-        console.log('User created successfully');
+        userHosted.push(newEvent);
 
-        res.status(201).json({ message: 'User created successfully.'});
+        // Save the updated events back to the file
+        await fs.writeFile(dataPath, JSON.stringify(userHosted, null, 2), 'utf8');
+        console.log('Event added successfully');
+
+        res.status(201).json({ message: 'Event added successfully.' });
     } catch (error) {
         console.error('Server error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
 
+// Assuming the users.json is in the 'data' subdirectory of the directory where this script is located
 
