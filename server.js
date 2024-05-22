@@ -7,7 +7,9 @@ import { conditionalExecutionBasedOnGroupOne } from './pushN.js';
 import setupMiddleware from './setupMiddleware.js';
 import { loginUser, getUserDetails } from './userValidation.js';
 import { getCountrys, getEvents, addEvent } from './coordinates.js'
-import { getVideos, postVideos } from './videos.js'
+import { getVideos } from './videos.js'
+import {  uploadingMedia } from './uploadAllMedia.js'
+
 import path from 'path';
 
 // Import other handlers as needed
@@ -34,6 +36,7 @@ app.use('/data', express.static(path.join( 'data')));
 
 
 //defined routes
+
 app.post('/create-user', createUser);
 app.post('/create-events', createEvent);
 app.post('/login', loginUser);
@@ -44,10 +47,11 @@ app.post('/add-event', addEvent);
 app.get('/get-events', getEvents);
 app.get('/get-countrys', getCountrys);
 app.get('/get-Videos', getVideos);
-app.post('/add-Video', postVideos)
+app.post('/add-Video', uploadingMedia)
 
 
 
+// , postVideos
 // Catch-all for undefined routes
 app.use((req, res) => {
   res.status(404).send('Not Found');

@@ -18,6 +18,8 @@ function setupMiddleware(app) {
 
 }
 
+
 console.log('made it here should be the end of setupMiddleware.js');
 export default setupMiddleware;
+
 
