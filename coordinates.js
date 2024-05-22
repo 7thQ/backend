@@ -89,6 +89,7 @@ export const getCountrys = async (req, res) => {
 export const addEvent = async (req, res) => {
     try {
         const {
+            userName,
             eventName,
             latitude,
             longitude,
@@ -108,19 +109,20 @@ export const addEvent = async (req, res) => {
         const userHosted = JSON.parse(data);
 
         // Check if the event already exists by address or coordinates
-        if (userHosted.some(event =>
-            (event.location.streetAddress === streetAddress && 
-             event.location.city === city && 
-             event.location.state === state && 
-             event.location.zipCode === zipCode) || 
-            (event.Coordinate.latitude === latitude && 
-             event.Coordinate.longitude === longitude)
-        )) {
-            console.log('Event already exists at this location');
-            return res.status(409).json({ message: 'Event already exists at this location.' });
-        }
+        // if (userHosted.some(event =>
+        //     (event.location.streetAddress === streetAddress && 
+        //      event.location.city === city && 
+        //      event.location.state === state && 
+        //      event.location.zipCode === zipCode) || 
+        //     (event.Coordinate.latitude === latitude && 
+        //      event.Coordinate.longitude === longitude)
+        // )) {
+        //     console.log('Event already exists at this location');
+        //     return res.status(409).json({ message: 'Event already exists at this location.' });
+        // }
 
         console.log('Received request to add event', {
+            userName,
             eventName,
             latitude,
             longitude,
@@ -134,6 +136,7 @@ export const addEvent = async (req, res) => {
         });
 
         const newEvent = {
+            userName,
             eventName,
             eventDates: {
                 start: new Date(start),
