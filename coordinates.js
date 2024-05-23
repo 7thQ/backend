@@ -152,7 +152,8 @@ export const addEvent = async (req, res) => {
             Coordinate: {
                 latitude,
                 longitude
-            }
+            },
+            url:[]
         };
 
         userHosted.push(newEvent);

@@ -51,7 +51,10 @@ export async function createUser(req, res) {
                 phoneNumber,
                 Logins: { // Nesting login details under 'Logins'
                     userName,
-                    password}
+                    password
+                },
+                url:[]
+                    
 
             
         };
