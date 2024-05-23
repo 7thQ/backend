@@ -71,3 +71,4 @@ const printButtonAndWaitForClick = () => {
 
 // Start the process
 printButtonAndWaitForClick();
+
