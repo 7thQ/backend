@@ -55,7 +55,10 @@ const incrementIdParts = () => {
     idParts.C = 1;
     idParts.WC += 1;
   }
-  // Note: WC has no further carry as we don't expect to need it based on the problem description
+   // Now WC can increment, useful for representing up to 7 continents or more
+   if (idParts.WC > 7) { // Assuming a wrap-around or reset is not necessary beyond 7 continents
+    idParts.WC = 1;
+  }
 };
 
 // Function to print the button and wait for a click (Enter key press)

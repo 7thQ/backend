@@ -53,7 +53,7 @@ export async function createUser(req, res) {
                     userName,
                     password
                 },
-                url:[]
+                userURLs:[]
                     
 
             
