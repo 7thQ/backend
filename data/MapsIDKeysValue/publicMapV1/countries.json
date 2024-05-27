@@ -1,0 +1,18 @@
+{
+
+    "North America": {
+        "United_States":"C1",
+        "Mexico":"C2",
+        "Canada":"C3"
+    },
+    "South America": {
+        "Brazil":"C4",
+        "Argentina":"C5",
+        "Chile":"C6"
+    }
+
+
+
+
+
+}

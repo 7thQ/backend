@@ -1,26 +1,33 @@
 
 
+
+// main.mjs
+// import { fetchData1 } from './fetchData1.mjs';
+// import { fetchData2 } from './fetchData2.mjs';
+
+
 // fetchData1.mjs
 export async function fetchData1() {
+   
     return new Promise((resolve) => {
-        setTimeout(() => {
+        console.log("Fetching data from function 1");
+        // setTimeout(() => {
             resolve("Data from function 1");
-        }, 1000); // Simulate async operation
+        // }, 1000); // Simulate async operation
     });
 }
 
 // fetchData2.mjs
 export async function fetchData2() {
+    console.log("Fetching data from function 2");
     return new Promise((resolve) => {
-        setTimeout(() => {
+        
+        // setTimeout(() => {
             resolve("Data from function 2");
-        }, 7000); // Simulate async operation
+        // }, 8000); // Simulate async operation
     });
 }
 
-// main.mjs
-// import { fetchData1 } from './fetchData1.mjs';
-// import { fetchData2 } from './fetchData2.mjs';
 
 async function mainFunction() {
     try {
