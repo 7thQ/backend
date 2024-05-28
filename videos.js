@@ -16,7 +16,9 @@ export const getVideos = async (req, res) => {
         const files = await fs.promises.readdir(poolDirectory);
         console.log('Files in Directory:', files); // Log all files found in the directory
 
-        const videoFiles = files;
+        // const videoFiles = files;
+        // const videoFiles = files.filter(file => file.endsWith('.mov') || file.endsWith('.mp4') || file.endsWith('.avi'));
+        const videoFiles = files.filter(file => !file.endsWith('.DS_Store')); // Exclude .DS_Store files
         // const videoFiles = files.filter(file => file.endsWith('.mp4')); // Filter only mp4 files
         console.log('Filtered Video Files:', videoFiles); // Log filtered list of video files
 

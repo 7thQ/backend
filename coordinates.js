@@ -222,8 +222,68 @@ const incrementIdParts = () => {
   // Note: WC has no further carry as we don't expect to need it based on the problem description
 };
 
+
+
+
+
+import { fileURLToPath } from 'url'; // Utility to convert URL to file path
+
+// Define paths to the JSON files
+const basePath = fileURLToPath(new URL('data/MapsIDKeysValue/publicMapV2', import.meta.url));
+
+// Function to read JSON data from a file
+async function readJson(filePath) {
+    const data = await fs.readFile(filePath, 'utf-8'); // Read file asynchronously with UTF-8 encoding
+    return JSON.parse(data); // Parse the string data into JSON
+}
+
+// Function to get the continent code based on user input
+async function getContinentCode(continent) {
+    const continentDataPath = `${basePath}/continent.json`; // Path to continent data
+    const data = await readJson(continentDataPath);
+    return data[continent]; // Return the code associated with the given continent
+}
+
+// Function to get the country code based on user input
+async function getCountryCode(continent, country) {
+    const countriesDataPath = `${basePath}/${continent.replace(/ /g, '_')}/countries.json`; // Construct path to the specific country file
+    const data = await readJson(countriesDataPath);
+    return data[country]; // Return the code associated with the given country
+}
+
+// Refactored main function to receive continent and country from function arguments
+async function getCodes(continent, country) {
+    try {
+        const [continentCode, countryCode] = await Promise.all([
+            getContinentCode(continent),
+            getCountryCode(continent, country)
+        ]);
+        return `${continentCode}${countryCode}`;
+    } catch (error) {
+        console.error("An error occurred:", error);
+        throw error; // Re-throw error to be handled by caller
+    }
+}
+
+
+
+
+
 export const addEvent = async (req, res) => {
     try {
+        // const {
+        //     userName,
+        //     eventName,
+        //     latitude,
+        //     longitude,
+        //     streetAddress,
+        //     city,
+        //     state,
+        //     zipCode,
+        //     start,
+        //     end,
+        //     features
+        // } = req.body;
         const {
             userName,
             eventName,
@@ -235,7 +295,9 @@ export const addEvent = async (req, res) => {
             zipCode,
             start,
             end,
-            features
+            features,
+            continent,
+            country
         } = req.body;
 
         const dataPath = new URL('data/userHosted.json', import.meta.url).pathname;
@@ -255,16 +317,21 @@ export const addEvent = async (req, res) => {
             zipCode,
             start,
             end,
-            features
+            features,
+            continent,
+            country
         });
 
-        // Generate a unique ID for the new event
-        const eventId = generateCurrentId();
-        // Increment the ID parts for the next event
-        incrementIdParts();
+        // // Generate a unique ID for the new event
+        // const eventId = generateCurrentId();
+        // // Increment the ID parts for the next event
+        // incrementIdParts();
+        const combinedCode = await getCodes(continent, country);
+        console.log(`Received combined code for continent and country: ${combinedCode}`);
+        
 
         const newEvent = {
-            id: eventId,  // Assign the generated ID
+            id: combinedCode,  // Assign the generated ID
             userName,
             eventName,
             eventDates: {
@@ -282,7 +349,9 @@ export const addEvent = async (req, res) => {
                 latitude,
                 longitude
             },
-            url:[]
+            url:[],
+            continent,
+            country
         };
 
         userHosted.push(newEvent);
@@ -291,7 +360,7 @@ export const addEvent = async (req, res) => {
         await fs.writeFile(dataPath, JSON.stringify(userHosted, null, 2), 'utf8');
         console.log('Event added successfully');
 
-        res.status(201).json({ message: 'Event added successfully.', id: eventId });
+        res.status(201).json({ message: 'Event added successfully.', id: combinedCode });
     } catch (error) {
         console.error('Server error:', error);
         res.status(500).json({ message: 'Server error' });

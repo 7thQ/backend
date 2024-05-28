@@ -82,12 +82,14 @@
 //         const country = await question("Enter a country: "); // Ask user for country
 //         rl.close(); // Close readline interface
 
+//         console.time('Fetching Codes'); // Start timer
 //         // Execute both asynchronous functions in parallel and wait for both promises to resolve
 //         const [continentCode, countryCode] = await Promise.all([
 //             getContinentCode(continent),
 //             getCountryCode(continent, country)
 //         ]);
 
+//         console.timeEnd('Fetching Codes'); // End timer and print execution time
 //         // Combine the codes and print the result to the console
 //         console.log(`Combined Code: ${continentCode}${countryCode}`);
 //     } catch (error) {
@@ -100,6 +102,104 @@
 // // Run the main function
 // main();
 
+
+
+
+
+// Import required modules
+import fs from 'fs/promises'; // File system module with promise support for asynchronous operations
+import { createInterface } from 'readline'; // Readline module for reading input from the console
+import { fileURLToPath } from 'url'; // Utility to convert URL to file path
+
+// Define paths to the JSON files
+const basePath = fileURLToPath(new URL('data/MapsIDKeysValue/publicMapV2', import.meta.url));
+
+// Function to read JSON data from a file
+async function readJson(filePath) {
+    const data = await fs.readFile(filePath, 'utf-8'); // Read file asynchronously with UTF-8 encoding
+    return JSON.parse(data); // Parse the string data into JSON
+}
+
+// Function to get the continent code based on user input
+async function getContinentCode(continent) {
+    const continentDataPath = `${basePath}/continent.json`; // Path to continent data
+    const data = await readJson(continentDataPath);
+    return data[continent]; // Return the code associated with the given continent
+}
+
+// Function to get the country code based on user input
+async function getCountryCode(continent, country) {
+    const countriesDataPath = `${basePath}/${continent.replace(/ /g, '_')}/countries.json`; // Construct path to the specific country file
+    const data = await readJson(countriesDataPath);
+    return data[country]; // Return the code associated with the given country
+}
+
+// Main function that orchestrates the flow of the script
+async function main() {
+    const rl = createInterface({
+        input: process.stdin, // Standard input stream for the console input
+        output: process.stdout // Standard output stream for the console output
+    });
+
+    // Helper function to wrap readline question in a promise for async/await usage
+    const question = (query) => new Promise((resolve) => rl.question(query, resolve));
+
+    try {
+        const continent = await question("Enter a continent: "); // Ask user for continent
+        const country = await question("Enter a country: "); // Ask user for country
+        rl.close(); // Close readline interface
+
+        console.time('Fetching Codes'); // Start timer
+
+        // Execute both asynchronous functions concurrently using Promise.all
+        const [continentCode, countryCode] = await Promise.all([
+            getContinentCode(continent),
+            getCountryCode(continent, country)
+        ]);
+
+        console.timeEnd('Fetching Codes'); // End timer and print execution time
+
+        // Combine the codes and print the result to the console
+        var codeID = `${continentCode}${countryCode}`;
+        console.log(`Combined Code: ${codeID}`);
+       
+        var codeID = `${continentCode}${countryCode}`;
+    } catch (error) {
+        // Handle any errors that occur during the process
+        console.error("An error occurred:", error);
+        rl.close(); // Ensure readline interface is closed on error
+    }
+}
+
+// Run the main function
+main();
+
+
+
+
+// export const addEvent = async (req, res) => {
+//     try {
+//         const {
+//             userName,
+//             eventName,
+//             latitude,
+//             longitude,
+//             streetAddress,
+//             city,
+//             state,
+//             zipCode,
+//             start,
+//             end,
+//             features,
+//             continent,
+//             country,
+
+//             county,
+
+//             neighborhood 
+//         } = req.body;
+//     }
+// };
 
 
 
@@ -149,11 +249,9 @@
 
 //         console.time('Fetching Codes'); // Start timer
 
-//         // Execute both asynchronous functions concurrently using Promise.all
-//         const [continentCode, countryCode] = await Promise.all([
-//             getContinentCode(continent),
-//             getCountryCode(continent, country)
-//         ]);
+//         // Execute both asynchronous functions sequentially
+//         const continentCode = await getContinentCode(continent);
+//         const countryCode = await getCountryCode(continent, country);
 
 //         console.timeEnd('Fetching Codes'); // End timer and print execution time
 
@@ -168,67 +266,3 @@
 
 // // Run the main function
 // main();
-
-
-// Import required modules
-import fs from 'fs/promises'; // File system module with promise support for asynchronous operations
-import { createInterface } from 'readline'; // Readline module for reading input from the console
-import { fileURLToPath } from 'url'; // Utility to convert URL to file path
-
-// Define paths to the JSON files
-const basePath = fileURLToPath(new URL('data/MapsIDKeysValue/publicMapV2', import.meta.url));
-
-// Function to read JSON data from a file
-async function readJson(filePath) {
-    const data = await fs.readFile(filePath, 'utf-8'); // Read file asynchronously with UTF-8 encoding
-    return JSON.parse(data); // Parse the string data into JSON
-}
-
-// Function to get the continent code based on user input
-async function getContinentCode(continent) {
-    const continentDataPath = `${basePath}/continent.json`; // Path to continent data
-    const data = await readJson(continentDataPath);
-    return data[continent]; // Return the code associated with the given continent
-}
-
-// Function to get the country code based on user input
-async function getCountryCode(continent, country) {
-    const countriesDataPath = `${basePath}/${continent.replace(/ /g, '_')}/countries.json`; // Construct path to the specific country file
-    const data = await readJson(countriesDataPath);
-    return data[country]; // Return the code associated with the given country
-}
-
-// Main function that orchestrates the flow of the script
-async function main() {
-    const rl = createInterface({
-        input: process.stdin, // Standard input stream for the console input
-        output: process.stdout // Standard output stream for the console output
-    });
-
-    // Helper function to wrap readline question in a promise for async/await usage
-    const question = (query) => new Promise((resolve) => rl.question(query, resolve));
-
-    try {
-        const continent = await question("Enter a continent: "); // Ask user for continent
-        const country = await question("Enter a country: "); // Ask user for country
-        rl.close(); // Close readline interface
-
-        console.time('Fetching Codes'); // Start timer
-
-        // Execute both asynchronous functions sequentially
-        const continentCode = await getContinentCode(continent);
-        const countryCode = await getCountryCode(continent, country);
-
-        console.timeEnd('Fetching Codes'); // End timer and print execution time
-
-        // Combine the codes and print the result to the console
-        console.log(`Combined Code: ${continentCode}${countryCode}`);
-    } catch (error) {
-        // Handle any errors that occur during the process
-        console.error("An error occurred:", error);
-        rl.close(); // Ensure readline interface is closed on error
-    }
-}
-
-// Run the main function
-main();
