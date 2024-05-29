@@ -4,32 +4,6 @@ import { URL } from 'url';
 
 
 
-// export const getcoordinates = async (req, res) => {
-//     const eventQuery = req.query.events; // This could be used to specify if the request is for coordinates
-//     console.log('Received Query:', eventQuery);
-
-//     // Path to the coordinates data file
-//     const dataPath = new URL('data/coordinates.json', import.meta.url).pathname;
-
-//     try {
-//         // Read and parse the coordinates data file asynchronously
-//         const data = await fs.readFile(dataPath, 'utf8');
-//         const coordinates = JSON.parse(data);
-
-//         // Check if the query parameter matches the expected one
-//         if (eventQuery === 'all') {
-//             console.log('Sending all coordinates');
-//             res.status(200).json({message: 'Server',coordinates: coordinates});
-//         } else {
-//             // If the query parameter is not what was expected
-//             console.log('Invalid query parameter');
-//             res.status(400).json({ message: 'Invalid query parameter' });
-//         }
-//     } catch (err) {
-//         console.error('Error accessing coordinates data:', err);
-//         res.status(500).json({ message: 'Server error' });
-//     }
-// };
 
 export const getEvents = async (req, res) => {
     const eventQuery = req.query.userEvents; // This could be used to specify if the request is for coordinates
@@ -258,7 +232,7 @@ async function getCodes(continent, country) {
             getContinentCode(continent),
             getCountryCode(continent, country)
         ]);
-        return `${continentCode}${countryCode}`;
+        return `P1${continentCode}${countryCode}`;
     } catch (error) {
         console.error("An error occurred:", error);
         throw error; // Re-throw error to be handled by caller

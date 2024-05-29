@@ -120,19 +120,21 @@ async function readJson(filePath) {
     return JSON.parse(data); // Parse the string data into JSON
 }
 
+
+
 // Function to get the continent code based on user input
 async function getContinentCode(continent) {
     const continentDataPath = `${basePath}/continent.json`; // Path to continent data
     const data = await readJson(continentDataPath);
     return data[continent]; // Return the code associated with the given continent
-}
+};
 
 // Function to get the country code based on user input
 async function getCountryCode(continent, country) {
     const countriesDataPath = `${basePath}/${continent.replace(/ /g, '_')}/countries.json`; // Construct path to the specific country file
     const data = await readJson(countriesDataPath);
     return data[country]; // Return the code associated with the given country
-}
+};
 
 // Main function that orchestrates the flow of the script
 async function main() {
@@ -160,7 +162,7 @@ async function main() {
         console.timeEnd('Fetching Codes'); // End timer and print execution time
 
         // Combine the codes and print the result to the console
-        var codeID = `${continentCode}${countryCode}`;
+        var codeID = `P1${continentCode}${countryCode}`;
         console.log(`Combined Code: ${codeID}`);
        
         var codeID = `${continentCode}${countryCode}`;
@@ -169,37 +171,51 @@ async function main() {
         console.error("An error occurred:", error);
         rl.close(); // Ensure readline interface is closed on error
     }
-}
+};
 
 // Run the main function
-main();
+// main();
 
 
 
+import { readFile } from 'fs/promises';
 
-// export const addEvent = async (req, res) => {
-//     try {
-//         const {
-//             userName,
-//             eventName,
-//             latitude,
-//             longitude,
-//             streetAddress,
-//             city,
-//             state,
-//             zipCode,
-//             start,
-//             end,
-//             features,
-//             continent,
-//             country,
 
-//             county,
+var IDtag = "P1WC1C1S1SC1CT1N1";
 
-//             neighborhood 
-//         } = req.body;
-//     }
-// };
+async function UPChecker() {
+    // Define the path to the JSON file
+    const path = fileURLToPath(new URL('data/userHosted.json', import.meta.url));
+
+    // Read and parse the JSON file
+    const data = await readFile(path, 'utf8');
+    const userHosted = JSON.parse(data);
+
+    // Initialize a variable to track the highest UP number
+    let maxUP = 0;
+
+    // Iterate over each item in the userHosted array
+    userHosted.forEach(item => {
+        const currentUP = parseInt(item.id.split("UP")[1]);
+        if (currentUP > maxUP) {
+            maxUP = currentUP;
+        }
+    });
+
+    // Increment the highest found UP number by one
+    const newUP = maxUP + 1;
+
+    // Append the new UP number to IDtag
+    const completeIDtag = `${IDtag}UP${newUP}`;
+    console.log(completeIDtag)
+
+    return completeIDtag;
+    
+};
+
+// Call the function and log the result
+UPChecker();
+
 
 
 
