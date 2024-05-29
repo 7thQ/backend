@@ -136,6 +136,13 @@ async function getCountryCode(continent, country) {
     return data[country]; // Return the code associated with the given country
 };
 
+// Function to get the country code based on user input
+async function getStateCode(continent, country, state) {
+    const statesDataPath = `${basePath}/${continent.replace(/ /g, '_')}/${country.replace(/ /g, '_')}/States.json`; // Construct path to the specific country file
+    const data = await readJson(statesDataPath);
+    return data[state]; // Return the code associated with the given country
+};
+
 
 import { readFile } from 'fs/promises';
 
@@ -185,23 +192,34 @@ async function main() {
     try {
         const continent = await question("Enter a continent: "); // Ask user for continent
         const country = await question("Enter a country: "); // Ask user for country
+        const state = await question("Enter a country: "); // Ask user for country
         rl.close(); // Close readline interface
 
         console.time('Fetching Codes'); // Start timer
 
         // Execute both asynchronous functions concurrently using Promise.all
-        const [continentCode, countryCode, UP] = await Promise.all([
+        const [continentCode, countryCode, stateCode, UP] = await Promise.all([
             getContinentCode(continent),
             getCountryCode(continent, country),
+            getStateCode(continent, country, state),
             UPChecker()
         ]);
 
         console.timeEnd('Fetching Codes'); // End timer and print execution time
 
         // Combine the codes and print the result to the console
-        var codeID = `P1${continentCode}${countryCode}${UP}`;
-        console.log(`Combined Code: ${codeID}`);
-       
+        // var codeID = `P1${continentCode}${countryCode}${stateCode}${UP}`;
+        // console.log(`Combined Code: ${codeID}`);
+        // Check if any codes are undefined
+        if (!continentCode || !countryCode || !stateCode || !UP) {
+            console.log("One or more entries were not found, please re-enter the places correctly.");
+            main(); // Restart the process
+        } else {
+            // Combine the codes and print the result to the console
+            var codeID = `P1${continentCode}${countryCode}${stateCode}${UP}`;
+            console.log(`Combined Code: ${codeID}`);
+        }
+
         
     } catch (error) {
         // Handle any errors that occur during the process
