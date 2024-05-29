@@ -136,52 +136,8 @@ async function getCountryCode(continent, country) {
     return data[country]; // Return the code associated with the given country
 };
 
-// Main function that orchestrates the flow of the script
-async function main() {
-    const rl = createInterface({
-        input: process.stdin, // Standard input stream for the console input
-        output: process.stdout // Standard output stream for the console output
-    });
-
-    // Helper function to wrap readline question in a promise for async/await usage
-    const question = (query) => new Promise((resolve) => rl.question(query, resolve));
-
-    try {
-        const continent = await question("Enter a continent: "); // Ask user for continent
-        const country = await question("Enter a country: "); // Ask user for country
-        rl.close(); // Close readline interface
-
-        console.time('Fetching Codes'); // Start timer
-
-        // Execute both asynchronous functions concurrently using Promise.all
-        const [continentCode, countryCode] = await Promise.all([
-            getContinentCode(continent),
-            getCountryCode(continent, country)
-        ]);
-
-        console.timeEnd('Fetching Codes'); // End timer and print execution time
-
-        // Combine the codes and print the result to the console
-        var codeID = `P1${continentCode}${countryCode}`;
-        console.log(`Combined Code: ${codeID}`);
-       
-        var codeID = `${continentCode}${countryCode}`;
-    } catch (error) {
-        // Handle any errors that occur during the process
-        console.error("An error occurred:", error);
-        rl.close(); // Ensure readline interface is closed on error
-    }
-};
-
-// Run the main function
-// main();
-
-
 
 import { readFile } from 'fs/promises';
-
-
-var IDtag = "P1WC1C1S1SC1CT1N1";
 
 async function UPChecker() {
     // Define the path to the JSON file
@@ -206,16 +162,97 @@ async function UPChecker() {
     const newUP = maxUP + 1;
 
     // Append the new UP number to IDtag
-    const completeIDtag = `${IDtag}UP${newUP}`;
+    const UP = `UP${newUP}`;
+    console.log(UP)
+
+    return UP;
+    
+};
+
+
+
+
+// Main function that orchestrates the flow of the script
+async function main() {
+    const rl = createInterface({
+        input: process.stdin, // Standard input stream for the console input
+        output: process.stdout // Standard output stream for the console output
+    });
+
+    // Helper function to wrap readline question in a promise for async/await usage
+    const question = (query) => new Promise((resolve) => rl.question(query, resolve));
+
+    try {
+        const continent = await question("Enter a continent: "); // Ask user for continent
+        const country = await question("Enter a country: "); // Ask user for country
+        rl.close(); // Close readline interface
+
+        console.time('Fetching Codes'); // Start timer
+
+        // Execute both asynchronous functions concurrently using Promise.all
+        const [continentCode, countryCode, UP] = await Promise.all([
+            getContinentCode(continent),
+            getCountryCode(continent, country),
+            UPChecker()
+        ]);
+
+        console.timeEnd('Fetching Codes'); // End timer and print execution time
+
+        // Combine the codes and print the result to the console
+        var codeID = `P1${continentCode}${countryCode}${UP}`;
+        console.log(`Combined Code: ${codeID}`);
+       
+        
+    } catch (error) {
+        // Handle any errors that occur during the process
+        console.error("An error occurred:", error);
+        rl.close(); // Ensure readline interface is closed on error
+    }
+};
+
+// Run the main function
+main();
+
+
+
+
+
+
+// var IDtag = "P1WC1C1S1SC1CT1N1";
+
+
+// Call the function and log the result
+
+
+export async function UPCheck(combinedCode) {
+    // Define the path to the JSON file
+    const path = fileURLToPath(new URL('data/userHosted.json', import.meta.url));
+
+    // Read and parse the JSON file
+    const data = await readFile(path, 'utf8');
+    const userHosted = JSON.parse(data);
+
+    // Initialize a variable to track the highest UP number
+    let maxUP = 0;
+
+    // Iterate over each item in the userHosted array
+    userHosted.forEach(item => {
+        const currentUP = parseInt(item.id.split("UP")[1]);
+        if (currentUP > maxUP) {
+            maxUP = currentUP;
+        }
+    });
+
+    // Increment the highest found UP number by one
+    const newUP = maxUP + 1;
+
+    // Append the new UP number to IDtag
+    const completeIDtag = `${combinedCode}UP${newUP}`;
     console.log(completeIDtag)
 
     return completeIDtag;
     
 };
-
-// Call the function and log the result
-UPChecker();
-
 
 
 

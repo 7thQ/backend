@@ -45,5 +45,28 @@
       "latitude": "38.58062",
       "longitude": "-121.54550"
     }
+  },
+  {
+    "id": "P1WC1C2UP3",
+    "userName": "",
+    "eventName": "",
+    "eventDates": {
+      "start": "1970-01-09T13:10:42.529Z",
+      "end": "1970-01-09T13:10:42.529Z"
+    },
+    "location": {
+      "streetAddress": "",
+      "city": "",
+      "state": "",
+      "zipCode": ""
+    },
+    "features": [],
+    "Coordinate": {
+      "latitude": "",
+      "longitude": ""
+    },
+    "url": [],
+    "continent": "North America",
+    "country": "Mexico"
   }
 ]

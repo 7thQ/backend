@@ -241,7 +241,7 @@ async function getCodes(continent, country) {
 
 
 
-
+import {UPCheck} from './testGrounds.js';
 
 export const addEvent = async (req, res) => {
     try {
@@ -302,10 +302,10 @@ export const addEvent = async (req, res) => {
         // incrementIdParts();
         const combinedCode = await getCodes(continent, country);
         console.log(`Received combined code for continent and country: ${combinedCode}`);
-        
+        const completeIDtag = await UPCheck(combinedCode)
 
         const newEvent = {
-            id: combinedCode,  // Assign the generated ID
+            id: completeIDtag,  // Assign the generated ID
             userName,
             eventName,
             eventDates: {
