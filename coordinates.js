@@ -146,38 +146,47 @@ export const getCountrys = async (req, res) => {
 // // Assuming the users.json is in the 'data' subdirectory of the directory where this script is located
 
 
+
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 export const getParcels = async (req, res) => {
     const layer = req.query.getParcel; // This could be used to specify if the request is for coordinates
     console.log('Received Query:', layer);
     try {
-        const basePath = fileURLToPath(new URL('data/MapsIDKeysValue/publicMapV2/continent.json', import.meta.url));
+        let basePath;
+        if (layer === 'all') {
+            basePath = new URL('data/MapsIDKeysValue/publicMapV2/continent.json', import.meta.url);
+        } else {
+            // Replace spaces with underscores globally in the layer parameter
+            const sanitizedLayer = layer.replace(/ /g, '_');
+            basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedLayer}/countries.json`, import.meta.url);
+        }
 
-        
         const data = await fs.readFile(basePath, 'utf8');
         const parcels = JSON.parse(data);
 
-    
         // Check if the query parameter matches the expected one
         if (layer === 'all') {
-            console.log('Sending all tingz');
-            res.status(200).json({message: 'Server',parcels: parcels});
+            console.log('Sending all continents');
+            res.status(200).json({ message: 'Server', parcels: parcels });
         } else {
-            // If the query parameter is not what was expected
-            console.log('Invalid query parameter');
-            res.status(400).json({ message: 'Invalid query parameter' });
+            console.log(`Sending parcels for layer: ${layer}`);
+            res.status(200).json({ message: 'Server', parcels: parcels });
         }
-
     } catch (error) {
         console.error('Server error:', error);
         res.status(500).json({ message: 'Server error' });
     }
-
-}
-
+};
 
 
 
-import { fileURLToPath } from 'url'; // Utility to convert URL to file path
+
+
 
 // Define paths to the JSON files
 const basePath = fileURLToPath(new URL('data/MapsIDKeysValue/publicMapV2', import.meta.url));
