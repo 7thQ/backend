@@ -146,56 +146,33 @@ export const getCountrys = async (req, res) => {
 // // Assuming the users.json is in the 'data' subdirectory of the directory where this script is located
 
 
+export const getParcels = async (req, res) => {
+    const layer = req.query.getParcel; // This could be used to specify if the request is for coordinates
+    console.log('Received Query:', layer);
+    try {
+        const basePath = fileURLToPath(new URL('data/MapsIDKeysValue/publicMapV2/continent.json', import.meta.url));
 
-// Object to hold the current value for each part of the ID
-const idParts = {
-  WC: 1,
-  C: 1,
-  S: 1,
-  SC: 1,
-  CT: 1,
-  N: 1,
-  UP: 1
-};
+        
+        const data = await fs.readFile(basePath, 'utf8');
+        const parcels = JSON.parse(data);
 
-// Function to generate the current unique id based on the specified structure
-const generateCurrentId = () => {
-  return `P1WC${idParts.WC}C${idParts.C}S${idParts.S}SC${idParts.SC}CT${idParts.CT}N${idParts.N}UP${idParts.UP}`;
-};
+    
+        // Check if the query parameter matches the expected one
+        if (layer === 'all') {
+            console.log('Sending all tingz');
+            res.status(200).json({message: 'Server',parcels: parcels});
+        } else {
+            // If the query parameter is not what was expected
+            console.log('Invalid query parameter');
+            res.status(400).json({ message: 'Invalid query parameter' });
+        }
 
-// Function to increment the ID parts
-const incrementIdParts = () => {
-  // Increment the "UP" part
-  idParts.UP += 1;
+    } catch (error) {
+        console.error('Server error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 
-  // Check and carry over if needed, like an odometer
-  if (idParts.UP > 999999) {
-    idParts.UP = 1;
-    idParts.N += 1;
-  }
-  if (idParts.N > 999999) {
-    idParts.N = 1;
-    idParts.CT += 1;
-  }
-  if (idParts.CT > 999999) {
-    idParts.CT = 1;
-    idParts.SC += 1;
-  }
-  if (idParts.SC > 999999) {
-    idParts.SC = 1;
-    idParts.S += 1;
-  }
-  if (idParts.S > 999999) {
-    idParts.S = 1;
-    idParts.C += 1;
-  }
-  if (idParts.C > 999999) {
-    idParts.C = 1;
-    idParts.WC += 1;
-  }
-  // Note: WC has no further carry as we don't expect to need it based on the problem description
-};
-
+}
 
 
 
@@ -245,19 +222,6 @@ import {UPCheck} from './testGrounds.js';
 
 export const addEvent = async (req, res) => {
     try {
-        // const {
-        //     userName,
-        //     eventName,
-        //     latitude,
-        //     longitude,
-        //     streetAddress,
-        //     city,
-        //     state,
-        //     zipCode,
-        //     start,
-        //     end,
-        //     features
-        // } = req.body;
         const {
             userName,
             eventName,

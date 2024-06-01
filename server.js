@@ -6,7 +6,7 @@ import { handleSearch } from './googleSearchApi.js';
 import { conditionalExecutionBasedOnGroupOne } from './pushN.js';
 import setupMiddleware from './setupMiddleware.js';
 import { loginUser, getUserDetails } from './userValidation.js';
-import { getCountrys, getEvents, addEvent } from './coordinates.js'
+import { getCountrys, getEvents, addEvent, getParcels } from './coordinates.js'
 import { getVideos } from './videos.js'
 import {  uploadingMedia } from './uploadAllMedia.js'
 
@@ -48,6 +48,7 @@ app.get('/get-events', getEvents);
 app.get('/get-countrys', getCountrys);
 app.get('/get-Videos', getVideos);
 app.post('/add-Video', uploadingMedia)
+app.get('/get-parcels', getParcels);
 
 
 
