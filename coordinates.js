@@ -60,91 +60,82 @@ export const getCountrys = async (req, res) => {
 };
 
 
-// export const addEvent = async (req, res) => {
-//     try {
-//         const {
-//             userName,
-//             eventName,
-//             latitude,
-//             longitude,
-//             streetAddress,
-//             city,
-//             state,
-//             zipCode,
-//             start,
-//             end,
-//             features
-//         } = req.body;
 
-//         const dataPath = new URL('data/userHosted.json', import.meta.url).pathname;
+// import { fileURLToPath } from 'url';
+// import { dirname, join } from 'path';
 
-//         // Read the current user-hosted events data
-//         const data = await fs.readFile(dataPath, 'utf8');
-//         const userHosted = JSON.parse(data);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
-//         // Check if the event already exists by address or coordinates
-//         // if (userHosted.some(event =>
-//         //     (event.location.streetAddress === streetAddress && 
-//         //      event.location.city === city && 
-//         //      event.location.state === state && 
-//         //      event.location.zipCode === zipCode) || 
-//         //     (event.Coordinate.latitude === latitude && 
-//         //      event.Coordinate.longitude === longitude)
-//         // )) {
-//         //     console.log('Event already exists at this location');
-//         //     return res.status(409).json({ message: 'Event already exists at this location.' });
-//         // }
-
-//         console.log('Received request to add event', {
-//             userName,
-//             eventName,
-//             latitude,
-//             longitude,
-//             streetAddress,
-//             city,
-//             state,
-//             zipCode,
-//             start,
-//             end,
-//             features
-//         });
-
-//         const newEvent = {
-//             userName,
-//             eventName,
-//             eventDates: {
-//                 start: new Date(start),
-//                 end: new Date(end)
-//             },
-//             location: {
-//                 streetAddress,
-//                 city,
-//                 state,
-//                 zipCode,
-//             },
-//             features,
-//             Coordinate: {
-//                 latitude,
-//                 longitude
-//             },
-//             url:[]
+// const parseLayerQuery = (layer) => {
+//     if (Array.isArray(layer)) {
+//         return {
+//             firstLayer: layer[0],
+//             secondLayer: layer.length > 1 ? layer[1] : null,
+//             thirdLayer: layer.length > 2 ? layer[2] : null
 //         };
+//     } else if (typeof layer === 'string' && layer.startsWith('[') && layer.endsWith(']')) {
+//         try {
+//             const parsedLayer = JSON.parse(layer);
+//             if (Array.isArray(parsedLayer)) {
+//                 return {
+//                     firstLayer: parsedLayer[0],
+//                     secondLayer: parsedLayer.length > 1 ? parsedLayer[1] : null,
+//                     thirdLayer: parsedLayer.length > 2 ? parsedLayer[2] : null
+//                 };
+//             }
+//         } catch (error) {
+//             console.error('Error parsing layer:', error);
+//         }
+//     }
+//     return { firstLayer: layer, secondLayer: null, thirdLayer: null };
+// };
 
-//         userHosted.push(newEvent);
+// const sanitizeLayer = (layer) => {
+//     return layer ? layer.replace(/ /g, '_') : null;
+// };
 
-//         // Save the updated events back to the file
-//         await fs.writeFile(dataPath, JSON.stringify(userHosted, null, 2), 'utf8');
-//         console.log('Event added successfully');
+// const constructFilePath = (firstLayer, secondLayer, thirdLayer) => {
+//     if (firstLayer === 'all' && !secondLayer && !thirdLayer) {
+//         return new URL('data/MapsIDKeysValue/publicMapV2/continent.json', import.meta.url);
+//     } else if (secondLayer && !thirdLayer) {
+//         const sanitizedSecondLayer = sanitizeLayer(secondLayer);
+//         return new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/countries.json`, import.meta.url);
+//     } else if (secondLayer && thirdLayer) {
+//         const sanitizedSecondLayer = sanitizeLayer(secondLayer);
+//         const sanitizedThirdLayer = sanitizeLayer(thirdLayer);
+//         return new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/${sanitizedThirdLayer}/States.json`, import.meta.url);
+//     }
+//     throw new Error('Invalid query parameters');
+// };
 
-//         res.status(201).json({ message: 'Event added successfully.' });
+// export const getParcels = async (req, res) => {
+//     const { firstLayer, secondLayer, thirdLayer } = parseLayerQuery(req.query.getParcel);
+
+//     console.log('Received Query:', firstLayer);
+//     console.log('Second element of Query:', secondLayer);
+//     console.log('Third element of Query:', thirdLayer);
+
+//     try {
+//         const basePath = constructFilePath(firstLayer, secondLayer, thirdLayer);
+//         const data = await fs.readFile(basePath, 'utf8');
+//         const parcels = JSON.parse(data);
+
+//         if (firstLayer === 'all' && !secondLayer && !thirdLayer) {
+//             console.log('Sending all continents');
+//             res.status(200).json({ message: 'Server', parcels: parcels });
+//         } else if (secondLayer && !thirdLayer) {
+//             console.log(`Sending parcels for layer: ${secondLayer}`);
+//             res.status(200).json({ message: 'Server', parcels: parcels });
+//         } else if (secondLayer && thirdLayer) {
+//             console.log(`Sending parcels for layers: ${secondLayer} and ${thirdLayer}`);
+//             res.status(200).json({ message: 'Server', parcels: parcels });
+//         }
 //     } catch (error) {
 //         console.error('Server error:', error);
 //         res.status(500).json({ message: 'Server error' });
 //     }
 // };
-
-// // Assuming the users.json is in the 'data' subdirectory of the directory where this script is located
-
 
 
 import { fileURLToPath } from 'url';
@@ -154,27 +145,66 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const getParcels = async (req, res) => {
-    const layer = req.query.getParcel; // This could be used to specify if the request is for coordinates
+    let layer = req.query.getParcel; // This could be used to specify if the request is for coordinates
+    let secondLayer;
+    let thirdLayer;
+
+    // Log the type and content of the query parameter
+    console.log('Type of req.query.getParcel:', typeof layer);
+    console.log('Content of req.query.getParcel:', layer);
+    
+    // Check if layer is an array or a string that looks like an array
+    if (Array.isArray(layer)) {
+        console.log('First element of the query array:', layer[0]);
+        secondLayer = layer.length > 1 ? layer[1] : null;
+        thirdLayer = layer.length > 2 ? layer[2] : null;
+        layer = layer[0];
+    } else if (typeof layer === 'string' && layer.startsWith('[') && layer.endsWith(']')) {
+        // Parse the string to get the first element
+        try {
+            const parsedLayer = JSON.parse(layer);
+            if (Array.isArray(parsedLayer)) {
+                console.log('Parsed array from string:', parsedLayer);
+                secondLayer = parsedLayer.length > 1 ? parsedLayer[1] : null;
+                thirdLayer = parsedLayer.length > 2 ? parsedLayer[2] : null;
+                layer = parsedLayer[0];
+            }
+        } catch (error) {
+            console.error('Error parsing layer:', error);
+        }
+    }
+    
     console.log('Received Query:', layer);
+    console.log('Second element of Query:', secondLayer);
+    console.log('Third element of Query:', thirdLayer);
+
     try {
         let basePath;
-        if (layer === 'all') {
+        if (layer === 'all' && !secondLayer && !thirdLayer) {
             basePath = new URL('data/MapsIDKeysValue/publicMapV2/continent.json', import.meta.url);
+        } else if (secondLayer && !thirdLayer) {
+            const sanitizedSecondLayer = secondLayer.replace(/ /g, '_');
+            basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/countries.json`, import.meta.url);
+        } else if (secondLayer && thirdLayer) {
+            const sanitizedSecondLayer = secondLayer.replace(/ /g, '_');
+            const sanitizedThirdLayer = thirdLayer.replace(/ /g, '_');
+            basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/${sanitizedThirdLayer}/States.json`, import.meta.url);
         } else {
-            // Replace spaces with underscores globally in the layer parameter
-            const sanitizedLayer = layer.replace(/ /g, '_');
-            basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedLayer}/countries.json`, import.meta.url);
+            res.status(400).json({ message: 'Invalid query parameters' });
+            return;
         }
 
         const data = await fs.readFile(basePath, 'utf8');
         const parcels = JSON.parse(data);
 
-        // Check if the query parameter matches the expected one
-        if (layer === 'all') {
+        if (layer === 'all' && !secondLayer && !thirdLayer) {
             console.log('Sending all continents');
             res.status(200).json({ message: 'Server', parcels: parcels });
-        } else {
-            console.log(`Sending parcels for layer: ${layer}`);
+        } else if (secondLayer && !thirdLayer) {
+            console.log(`Sending parcels for layer: ${secondLayer}`);
+            res.status(200).json({ message: 'Server', parcels: parcels });
+        } else if (secondLayer && thirdLayer) {
+            console.log(`Sending parcels for layers: ${secondLayer} and ${thirdLayer}`);
             res.status(200).json({ message: 'Server', parcels: parcels });
         }
     } catch (error) {
@@ -313,3 +343,101 @@ export const addEvent = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export const addEvent = async (req, res) => {
+//     try {
+//         const {
+//             userName,
+//             eventName,
+//             latitude,
+//             longitude,
+//             streetAddress,
+//             city,
+//             state,
+//             zipCode,
+//             start,
+//             end,
+//             features
+//         } = req.body;
+
+//         const dataPath = new URL('data/userHosted.json', import.meta.url).pathname;
+
+//         // Read the current user-hosted events data
+//         const data = await fs.readFile(dataPath, 'utf8');
+//         const userHosted = JSON.parse(data);
+
+//         // Check if the event already exists by address or coordinates
+//         // if (userHosted.some(event =>
+//         //     (event.location.streetAddress === streetAddress && 
+//         //      event.location.city === city && 
+//         //      event.location.state === state && 
+//         //      event.location.zipCode === zipCode) || 
+//         //     (event.Coordinate.latitude === latitude && 
+//         //      event.Coordinate.longitude === longitude)
+//         // )) {
+//         //     console.log('Event already exists at this location');
+//         //     return res.status(409).json({ message: 'Event already exists at this location.' });
+//         // }
+
+//         console.log('Received request to add event', {
+//             userName,
+//             eventName,
+//             latitude,
+//             longitude,
+//             streetAddress,
+//             city,
+//             state,
+//             zipCode,
+//             start,
+//             end,
+//             features
+//         });
+
+//         const newEvent = {
+//             userName,
+//             eventName,
+//             eventDates: {
+//                 start: new Date(start),
+//                 end: new Date(end)
+//             },
+//             location: {
+//                 streetAddress,
+//                 city,
+//                 state,
+//                 zipCode,
+//             },
+//             features,
+//             Coordinate: {
+//                 latitude,
+//                 longitude
+//             },
+//             url:[]
+//         };
+
+//         userHosted.push(newEvent);
+
+//         // Save the updated events back to the file
+//         await fs.writeFile(dataPath, JSON.stringify(userHosted, null, 2), 'utf8');
+//         console.log('Event added successfully');
+
+//         res.status(201).json({ message: 'Event added successfully.' });
+//     } catch (error) {
+//         console.error('Server error:', error);
+//         res.status(500).json({ message: 'Server error' });
+//     }
+// };
+
+// // Assuming the users.json is in the 'data' subdirectory of the directory where this script is located
+

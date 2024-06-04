@@ -180,7 +180,7 @@ async function UPChecker() {
 
 
 // Main function that orchestrates the flow of the script
-async function main() {
+async function main()  {
     const rl = createInterface({
         input: process.stdin, // Standard input stream for the console input
         output: process.stdout // Standard output stream for the console output
@@ -229,7 +229,7 @@ async function main() {
 };
 
 // Run the main function
-main();
+// main();
 
 
 
