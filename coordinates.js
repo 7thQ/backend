@@ -148,6 +148,7 @@ export const getParcels = async (req, res) => {
     let layer = req.query.getParcel; // This could be used to specify if the request is for coordinates
     let secondLayer;
     let thirdLayer;
+    let fourthLayer;
 
     // Log the type and content of the query parameter
     console.log('Type of req.query.getParcel:', typeof layer);
@@ -167,6 +168,7 @@ export const getParcels = async (req, res) => {
                 console.log('Parsed array from string:', parsedLayer);
                 secondLayer = parsedLayer.length > 1 ? parsedLayer[1] : null;
                 thirdLayer = parsedLayer.length > 2 ? parsedLayer[2] : null;
+                fourthLayer = parsedLayer.length > 3 ? parsedLayer[3] : null;
                 layer = parsedLayer[0];
             }
         } catch (error) {
@@ -177,6 +179,7 @@ export const getParcels = async (req, res) => {
     console.log('Received Query:', layer);
     console.log('Second element of Query:', secondLayer);
     console.log('Third element of Query:', thirdLayer);
+    console.log('Fourth element of Query:', fourthLayer);
 
     try {
         let basePath;
@@ -185,11 +188,17 @@ export const getParcels = async (req, res) => {
         } else if (secondLayer && !thirdLayer) {
             const sanitizedSecondLayer = secondLayer.replace(/ /g, '_');
             basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/countries.json`, import.meta.url);
-        } else if (secondLayer && thirdLayer) {
+        } else if (secondLayer && thirdLayer && !fourthLayer) {
             const sanitizedSecondLayer = secondLayer.replace(/ /g, '_');
             const sanitizedThirdLayer = thirdLayer.replace(/ /g, '_');
             basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/${sanitizedThirdLayer}/States.json`, import.meta.url);
-        } else {
+        } else if (secondLayer && thirdLayer && fourthLayer) {
+            const sanitizedSecondLayer = secondLayer.replace(/ /g, '_');
+            const sanitizedThirdLayer = thirdLayer.replace(/ /g, '_');
+            const sanitizedFourthLayer = fourthLayer.replace(/ /g, '_');
+            basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/${sanitizedThirdLayer}/${sanitizedFourthLayer}/Counties.json`, import.meta.url);
+
+        }else {
             res.status(400).json({ message: 'Invalid query parameters' });
             return;
         }
@@ -203,9 +212,13 @@ export const getParcels = async (req, res) => {
         } else if (secondLayer && !thirdLayer) {
             console.log(`Sending parcels for layer: ${secondLayer}`);
             res.status(200).json({ message: 'Server', parcels: parcels });
-        } else if (secondLayer && thirdLayer) {
+        } else if (secondLayer && thirdLayer && !fourthLayer) {
             console.log(`Sending parcels for layers: ${secondLayer} and ${thirdLayer}`);
             res.status(200).json({ message: 'Server', parcels: parcels });
+        }else if (secondLayer && thirdLayer && fourthLayer) {
+            console.log(`Sending parcels for layers: ${secondLayer} and ${thirdLayer} and ${fourthLayer}`);
+            res.status(200).json({ message: 'Server', parcels: parcels });
+
         }
     } catch (error) {
         console.error('Server error:', error);

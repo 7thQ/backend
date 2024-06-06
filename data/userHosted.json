@@ -68,5 +68,28 @@
     "url": [],
     "continent": "North America",
     "country": "Mexico"
+  },
+  {
+    "id": "P1WC1C1UP4",
+    "userName": "",
+    "eventName": "",
+    "eventDates": {
+      "start": "1970-01-09T13:21:41.990Z",
+      "end": "1970-01-09T13:21:41.990Z"
+    },
+    "location": {
+      "streetAddress": "",
+      "city": "",
+      "state": "California",
+      "zipCode": ""
+    },
+    "features": [],
+    "Coordinate": {
+      "latitude": "",
+      "longitude": ""
+    },
+    "url": [],
+    "continent": "North America",
+    "country": "United States"
   }
 ]
