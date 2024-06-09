@@ -150,6 +150,7 @@ export const getParcels = async (req, res) => {
     let thirdLayer;
     let fourthLayer;
     let fifthLayer;
+    let sixthLayer;
 
     // Log the type and content of the query parameter
     console.log('Type of req.query.getParcel:', typeof layer);
@@ -171,6 +172,7 @@ export const getParcels = async (req, res) => {
                 thirdLayer = parsedLayer.length > 2 ? parsedLayer[2] : null;
                 fourthLayer = parsedLayer.length > 3 ? parsedLayer[3] : null;
                 fifthLayer = parsedLayer.length > 4 ? parsedLayer[4] : null;
+                sixthLayer = parsedLayer.length > 5 ? parsedLayer[5] : null;
                 layer = parsedLayer[0];
             }
         } catch (error) {
@@ -183,6 +185,7 @@ export const getParcels = async (req, res) => {
     console.log('Third element of Query:', thirdLayer);
     console.log('Fourth element of Query:', fourthLayer);
     console.log('Fifth element of Query:', fifthLayer);
+    console.log('Sixth element of Query:', sixthLayer);
 
     try {
         let basePath;
@@ -201,14 +204,25 @@ export const getParcels = async (req, res) => {
             const sanitizedFourthLayer = fourthLayer.replace(/ /g, '_');
             basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/${sanitizedThirdLayer}/${sanitizedFourthLayer}/Counties.json`, import.meta.url);
 
-        }else if (secondLayer && thirdLayer && fourthLayer && fifthLayer) {
+        }else if (secondLayer && thirdLayer && fourthLayer && fifthLayer && !sixthLayer) {
             const sanitizedSecondLayer = secondLayer.replace(/ /g, '_');
             const sanitizedThirdLayer = thirdLayer.replace(/ /g, '_');
             const sanitizedFourthLayer = fourthLayer.replace(/ /g, '_');
             const sanitizedFifthLayer = fifthLayer.replace(/ /g, '_');
             basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/${sanitizedThirdLayer}/${sanitizedFourthLayer}/${sanitizedFifthLayer}/citiesandTownsandfFeatures.json`, import.meta.url);
 
-        }else {
+        }else if (secondLayer && thirdLayer && fourthLayer && fifthLayer && sixthLayer) {
+            const sanitizedSecondLayer = secondLayer.replace(/ /g, '_');
+            const sanitizedThirdLayer = thirdLayer.replace(/ /g, '_');
+            const sanitizedFourthLayer = fourthLayer.replace(/ /g, '_');
+            const sanitizedFifthLayer = fifthLayer.replace(/ /g, '_');
+            const sanitizedSixthLayer = sixthLayer.replace(/ /g, '_');
+            if (sanitizedSixthLayer === 'Features') {
+                basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/${sanitizedThirdLayer}/${sanitizedFourthLayer}/${sanitizedFifthLayer}/${sanitizedSixthLayer}/Features.json`, import.meta.url);
+            } else {
+            basePath = new URL(`data/MapsIDKeysValue/publicMapV2/${sanitizedSecondLayer}/${sanitizedThirdLayer}/${sanitizedFourthLayer}/${sanitizedFifthLayer}/${sanitizedSixthLayer}/neighborHoodsAndFeatures.json`, import.meta.url);
+            }
+        } else {
             res.status(400).json({ message: 'Invalid query parameters' });
             return;
         }
@@ -229,10 +243,13 @@ export const getParcels = async (req, res) => {
             console.log(`Sending parcels for layers: ${secondLayer} and ${thirdLayer} and ${fourthLayer}`);
             res.status(200).json({ message: 'Server', parcels: parcels });
 
-        }else if (secondLayer && thirdLayer && fourthLayer && fifthLayer) {
+        }else if (secondLayer && thirdLayer && fourthLayer && fifthLayer && !sixthLayer) {
             console.log(`Sending parcels for layers: ${secondLayer} and ${thirdLayer} and ${fourthLayer} and ${fifthLayer}`);
             res.status(200).json({ message: 'Server', parcels: parcels });
 
+        } else if (secondLayer && thirdLayer && fourthLayer && fifthLayer && sixthLayer) {
+            console.log(`Sending parcels for layers: ${secondLayer} and ${thirdLayer} and ${fourthLayer} and ${fifthLayer} and ${sixthLayer}`);
+            res.status(200).json({ message: 'Server', parcels: parcels });
         }
     } catch (error) {
         console.error('Server error:', error);
