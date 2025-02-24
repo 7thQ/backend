@@ -10,7 +10,7 @@ import path from "path";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-    apiKey: "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" // Make sure to use your actual API key
+    apiKey: "sk-RYbKKcuUvOvAS" // Make sure to use your actual API key
 });
 
 const speechFile = path.resolve("./speech.mp3");
