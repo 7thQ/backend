@@ -64,7 +64,7 @@ const fetchAndSaveResults = async (query, num) => {
     "engine": "google",
     "q": query,
     "num": num,
-    "api_key": "roCKRYa2qiL4sSixVaJPFJga"
+    "api_key": "roCKRYaJPFJga"
   };
 
   try {
