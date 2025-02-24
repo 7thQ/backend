@@ -8,7 +8,7 @@ import fs from "fs";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-    apiKey: "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" // Make sure to use your actual API key
+    apiKey: "sk-RYbKKcuUvjtDOasHOvAS" // Make sure to use your actual API key
 });
 
 
